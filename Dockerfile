@@ -5,4 +5,4 @@ RUN mkdir /app
 ADD . /app
 WORKDIR /app
 
-CMD gunicorn run:app --preload -w 1
+CMD sh /app/start.sh
