@@ -18,7 +18,7 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(
 gc = gspread.authorize(credentials)  # create a gspread authorize
 
 
-bot = telebot.TeleBot(TOKEN, threaded=True)
+bot = telebot.TeleBot(TOKEN, threaded=False)
 
 
 @bot.message_handler(commands=["start", "help"])
@@ -67,5 +67,5 @@ def order_handler(message):
 
 bot.remove_webhook()
 time.sleep(1)  # idling
-bot.set_webhook(url=f"https://order-collector.herokuapp.com/{bot.token}")
-#bot.set_webhook(url=f"https://bf8c0f3e7ae1.ngrok.io/{bot.token}")
+bot.set_webhook(url=f"https://{PROJECT}.herokuapp.com/{bot.token}")
+# bot.set_webhook(url=f"https://bf8c0f3e7ae1.ngrok.io/{bot.token}")
