@@ -32,6 +32,7 @@ def order_handler(message):
     if message.chat.type == "group" or message.chat.type == "private":
         print(message)
 
+        # orders matching pattern
         matching_pattern = r"((^[A-Z]{2,}[A-Z0-9]+)|(^[0-9]{8,}[A-Z0-9]+))"
         wks = gc.open("Turning").sheet1
         # these column below must have the same len
@@ -44,7 +45,6 @@ def order_handler(message):
             element[0]
             for element in re.findall(matching_pattern, message.text, re.MULTILINE)
         ]
-        print(list_of_orders)
 
         for i, order in enumerate(list_orders, 1):
             try:
