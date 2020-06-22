@@ -67,5 +67,5 @@ def order_handler(message):
 
 bot.remove_webhook()
 time.sleep(1)  # idling
-# bot.set_webhook(url=f"https://{PROJECT}.glitch.me/{bot.token}")
-bot.set_webhook(url=f"https://60e3fd470038.ngrok.io/{bot.token}")
+bot.set_webhook(url=f"https://order-collector.herokuapp.com/{bot.token}")
+# bot.set_webhook(url=f"https://60e3fd470038.ngrok.io/{bot.token}")
