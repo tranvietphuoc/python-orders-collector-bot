@@ -4,6 +4,8 @@ import json
 from bot import bot
 import telebot
 from config import SECRET_KEY
+import logging
+from logging import Formatter, FileHandler
 
 
 app = Flask(__name__)
@@ -34,3 +36,13 @@ def webhook():
         # print(PROJECT)
         return "OK", 200
     return abort(403)
+
+
+if __name__ == "__main__":
+    file_handler = FileHandler("app.log")
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(
+        Formatter("%(asctime)s %(levelname)s %(username)s: %(message)s")
+    )
+    app.logger.addHandler(file_handler)
+    app.run(debug=True)
