@@ -29,43 +29,49 @@ def send_welcome(message):
 
 @bot.message_handler(func=lambda m: True)
 def order_handler(message):
+
+    # open sheet
+    sh = gc.open("Turning")
     if message.chat.type == "group" or message.chat.type == "private":
         print(message)
+        print("-----")
 
-        # orders matching pattern
-        matching_pattern = r"((^[A-Z]{2,}[A-Z0-9]+)|(^[0-9]{8,}[A-Z0-9]+))"
-        wks = gc.open("Turning").sheet1
-        # these column below must have the same len
-        list_dates = wks.col_values(1)
-        list_users = wks.col_values(2)
-        list_orders = wks.col_values(3)
+        # read each sheet
+        wks_quay_dau = sh.worksheet("quay_dau")
+        wks_ra_kien = sh.worksheet("ra_kien")
 
-        # get list of orders from message.text
-        list_of_orders = [
-            element[0]
-            for element in re.findall(matching_pattern, message.text, re.MULTILINE)
-        ]
+        # read data from group and write to sheets
+        if message.chat.title == "hang chieu ra kien":
+            write_to_sheet(wks_ra_kien, message)
+        else:
+            write_to_sheet(wks_quay_dau, message)
 
-        for i, order in enumerate(list_orders, 1):
-            try:
-                if order:  # string is not None
-                    continue
-                else:
-                    for j, element in enumerate(list_of_orders):
-                        wks.update_cell(i + j, 3, element)
-                        wks.update_cell(
-                            i + j, 1, str(datetime.fromtimestamp(message.date))
-                        )
-                        wks.update_cell(
-                            i + j, 2, message.from_user.username,
-                        )
-            except AttributeError as e:
-                print(e)
 
-            break
+def write_to_sheet(wks, message):
+    """Write filtered data to sheet"""
+    # orders matching pattern
+    matching_pattern = r"((^[A-Z]{2,}[A-Z0-9]+)|(^[0-9]{8,}[A-Z0-9]+))"
+    list_orders = wks.col_values(3)
+    # get list of orders from message
+    list_of_orders = [
+        element[0]
+        for element in re.findall(matching_pattern, message.text, re.MULTILINE)
+    ]
+
+    # write to google sheet
+    try:
+        for i, element in enumerate(list_of_orders, 1):
+            wks.update_cell(
+                len(list_orders) + i, 1, str(datetime.fromtimestamp(message.date))
+            )
+            wks.update_cell(len(list_orders) + i, 2, message.from_user.username)
+            wks.update_cell(len(list_orders) + i, 3, element)
+    except AttributeError as e:
+        print(e)
+    print("Done!")
 
 
 bot.remove_webhook()
 time.sleep(1)  # idling
 bot.set_webhook(url=f"https://{PROJECT}.herokuapp.com/{bot.token}")
-# bot.set_webhook(url=f"https://bf8c0f3e7ae1.ngrok.io/{bot.token}")
+# bot.set_webhook(url=f"https://c7fe0e43375b.ngrok.io/{bot.token}")
