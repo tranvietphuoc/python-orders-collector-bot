@@ -50,7 +50,9 @@ def order_handler(message):
 def write_to_sheet(wks, message):
     """Write filtered data to sheet"""
     # orders matching pattern
-    matching_pattern = r"((^[A-Z]{2,}[A-Z0-9]+)|(^[0-9]{8,}[A-Z0-9]+))"
+    matching_pattern = (
+        r"((^[A-Z]{2,}[A-Z0-9]+)|(^[0-9]{8,}[A-Z0-9]+)|(^[0-9]{1}[A-Z0-9]+))"
+    )
     list_orders = wks.col_values(3)
     # get list of orders from message
     list_of_orders = [
@@ -69,6 +71,11 @@ def write_to_sheet(wks, message):
     except AttributeError as e:
         print(e)
     print("Done!")
+
+
+def check_state(message):
+    """Check the state of orders."""
+    pass
 
 
 bot.remove_webhook()
