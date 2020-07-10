@@ -2,6 +2,7 @@ import telebot
 import time
 from config import TOKEN, PROJECT
 import gspread
+from gspread.exceptions import APIError
 from oauth2client.service_account import ServiceAccountCredentials
 import re
 from datetime import datetime
@@ -23,8 +24,8 @@ bot = telebot.TeleBot(TOKEN, threaded=False)
 
 @bot.message_handler(commands=["start", "help"])
 def send_welcome(message):
-    bot.reply_to(message, "welcome!")
-    bot.send_message(message.chat.id, "hi there!")
+    bot.reply_to(message, "welcome! i'm a bot")
+    bot.send_message(message.chat.id, "my pleasure is reserving you <3")
 
 
 @bot.message_handler(func=lambda m: True)
@@ -53,6 +54,7 @@ def write_to_sheet(wks, message):
     matching_pattern = (
         r"((^[A-Z]{2,}[A-Z0-9]+)|(^[0-9]{8,}[A-Z0-9]+)|(^[0-9]{1}[A-Z0-9]+))"
     )
+    # read order column of google sheet
     list_orders = wks.col_values(3)
     # get list of orders from message
     list_of_orders = [
@@ -61,15 +63,21 @@ def write_to_sheet(wks, message):
     ]
 
     # write to google sheet
-    try:
-        for i, element in enumerate(list_of_orders, 1):
-            wks.update_cell(
-                len(list_orders) + i, 1, str(datetime.fromtimestamp(message.date))
-            )
-            wks.update_cell(len(list_orders) + i, 2, message.from_user.username)
-            wks.update_cell(len(list_orders) + i, 3, element)
-    except AttributeError as e:
-        print(e)
+    for i, element in enumerate(list_of_orders, 1):
+        try:
+            if element not in list_orders:
+                wks.update_cell(
+                    len(list_orders) + i, 1, str(datetime.fromtimestamp(message.date))
+                )
+                wks.update_cell(len(list_orders) + i, 2, message.from_user.username)
+                wks.update_cell(len(list_orders) + i, 3, element)
+        except AttributeError as attr:
+            print(attr)
+            break
+        except APIError:
+            print("Limit write request per 100 seconds!")
+            time.sleep(100)
+            continue
     print("Done!")
 
 
