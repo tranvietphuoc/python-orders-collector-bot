@@ -32,27 +32,29 @@ def send_welcome(message):
 def order_handler(message):
 
     # open sheet
-    sh = gc.open("Turning")
+    sh = gc.open_by_key('16PAFFaZOTfHczYcpmU6uu7Gtq_iCb5MTgCnUKlK5pP8')
     if message.chat.type == "group" or message.chat.type == "private":
         print(message)
         print("-----")
 
         # read each sheet
         wks_quay_dau = sh.worksheet("quay_dau")
-        wks_ra_kien = sh.worksheet("ra_kien")
+        wks_kiem_kho = sh.worksheet("kiem_kho")
 
         # read data from group and write to sheets
-        if message.chat.title == "hang chieu ra kien":
-            write_to_sheet(wks_ra_kien, message)
+        if message.chat.title == "KIỂM KHO QUẬN 7":
+            write_to_sheet(wks_kiem_kho, message)
+            bot.send_message(message.chat.id, "Done! Go to sheets to see the result.")
         else:
             write_to_sheet(wks_quay_dau, message)
+            bot.send_message(message.chat.id, 'Done! Go to sheets to see the result.')
 
 
 def write_to_sheet(wks, message):
     """Write filtered data to sheet"""
     # orders matching pattern
     matching_pattern = (
-        r"((^[A-Z]{2,}[A-Z0-9]+)|(^[0-9]{8,}[A-Z0-9]+)|(^[0-9]{1}[A-Z0-9]+))"
+        r"((^[A-Z]{2,}[A-Z0-9]{3,})|(^[0-9]{8,}[A-Z0-9]+)|(^[0-9]{1}[A-Z0-9]+))"
     )
     # read order column of google sheet
     list_orders = wks.col_values(3)
@@ -71,12 +73,13 @@ def write_to_sheet(wks, message):
                 )
                 wks.update_cell(len(list_orders) + i, 2, message.from_user.username)
                 wks.update_cell(len(list_orders) + i, 3, element)
+                # Google Sheets API has a limit 100 requests per 100 seconds per user. Limits for reads and writes are tracked separately. There is no daily usage limit.
+                time.sleep(10)
         except AttributeError as attr:
             print(attr)
             break
         except APIError:
             print("Limit write request per 100 seconds!")
-            time.sleep(100)
             continue
     print("Done!")
 
