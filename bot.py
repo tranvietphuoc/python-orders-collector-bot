@@ -24,8 +24,7 @@ bot = telebot.TeleBot(TOKEN, threaded=False)
 
 @bot.message_handler(commands=["start", "help"])
 def send_welcome(message):
-    bot.reply_to(message, "welcome! i'm a bot")
-    bot.send_message(message.chat.id, "my pleasure is reserving you <3")
+    bot.send_message(message.chat.id, "Welcome! My pleasure is reserving you ^^")
 
 
 @bot.message_handler(func=lambda m: True)

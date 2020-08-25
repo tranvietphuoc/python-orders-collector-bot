@@ -4,5 +4,6 @@ RUN pip install flask pyTelegramBotAPI python-dotenv oauth2client gspread gunico
 RUN mkdir /app
 ADD . /app
 WORKDIR /app
+RUN ls -la
 
 CMD sh /app/start.sh
