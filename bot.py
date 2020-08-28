@@ -1,6 +1,6 @@
 import telebot
 import time
-from config import TOKEN, PROJECT
+from config import TOKEN, PROJECT, SPREADSHEETS_ID
 import gspread
 from gspread.exceptions import APIError
 from oauth2client.service_account import ServiceAccountCredentials
@@ -57,7 +57,7 @@ def order_handler(message):
         print("-----")
 
         # read each sheet
-        wks_quay_dau = sh.worksheet("quay_dau")
+        wks_quay_dau = sh.worksheet('quay_dau')
 
         # read data from group and write to sheets
         if message.chat.title == "KIỂM KHO QUẬN 7":
@@ -68,7 +68,7 @@ def order_handler(message):
             to_sheets(wks_quay_dau, message)
             bot.send_message(message.chat.id, 'Lưu hoàn tất, vui lòng check google sheets mỗi ngày!')
         else:
-            bot.send_message(message.chat.id, 'Không hợp lệ.')
+            bot.send_message(message.chat.id, '^^')
 
 
 def to_csv(message):
@@ -81,7 +81,9 @@ def to_csv(message):
     with open(f"./assets/csv/kiem_kho_{datetime.fromtimestamp(message.date).strftime('%Y-%m-%d')}.csv", mode='w') as f:
         csv_writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         for e in list_orders_of_message:
-            csv_writer.writerow([datetime.fromtimestamp(message.date), message.from_user.username, e])
+            csv_writer.writerow(
+                [datetime.fromtimestamp(message.date).strftime('%Y-%m-%d'), message.from_user.username, e]
+            )
 
 
 def to_sheets(wks, message):
@@ -103,12 +105,14 @@ def to_sheets(wks, message):
         try:
             if element not in list_orders:
                 wks.update_cell(
-                    len(list_orders) + i, 1, str(datetime.fromtimestamp(message.date))
+                    len(list_orders) + i,
+                    1,
+                    str(datetime.fromtimestamp(message.date).strftime('%Y-%m-%d'))
                 )
                 wks.update_cell(len(list_orders) + i, 2, message.from_user.username)
                 wks.update_cell(len(list_orders) + i, 3, element)
                 # Google Sheets API has a limit 100 requests per 100 seconds per user. Limits for reads and writes are tracked separately. There is no daily usage limit.
-                time.sleep(10)
+                time.sleep(1)
         except AttributeError as attr:
             print(attr)
             break
@@ -128,5 +132,5 @@ def extract_arg(arg):
 
 bot.remove_webhook()
 time.sleep(1)  # idling
-# bot.set_webhook(url=f"https://{PROJECT}.herokuapp.com/{bot.token}")
-bot.set_webhook(url=f"https://3b80392e556e.ngrok.io/{bot.token}")
+bot.set_webhook(url=f"https://{PROJECT}.herokuapp.com/{bot.token}")
+# bot.set_webhook(url=f"https://3b80392e556e.ngrok.io/{bot.token}")
