@@ -78,7 +78,7 @@ def to_csv(message):
         element[0] for element in re.findall(matching_pattern, message.text, re.MULTILINE)
     ]
 
-    with open(f"./assets/csv/kiem_kho_{datetime.fromtimestamp(message.date).strftime('%Y-%m-%d')}.csv", mode='w') as f:
+    with open(f"./assets/csv/kiem_kho_{datetime.fromtimestamp(message.date).strftime('%Y-%m-%d')}.csv", mode='a') as f:
         csv_writer = csv.writer(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         for e in list_orders_of_message:
             csv_writer.writerow(
