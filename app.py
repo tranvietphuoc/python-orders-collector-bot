@@ -2,10 +2,9 @@ from flask import Flask, request, abort
 from werkzeug.exceptions import HTTPException
 import json
 from bot import bot
-import telebot
+from telebot.types import Update
 from config import SECRET_KEY
-import logging
-from logging import Formatter, FileHandler
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -21,7 +20,7 @@ def handle_exception(e):
     """
     response = e.get_response()
     response.data = json.dumps(
-        {"code": e.code, "name": e.name, "description": e.description,}
+        {"code": e.code, "name": e.name, "description": e.description}
     )
     response.content_type = "application/json"
     return response
@@ -30,19 +29,12 @@ def handle_exception(e):
 @app.route(WEBHOOK_URL, methods=["POST"])
 def webhook():
     if request.headers.get("content-type") == "application/json":
+        print(request.headers)
+        print(datetime.now())
+        # length = request.headers["content-length"]
         json_string = request.get_data().decode("utf-8")
-        update = telebot.types.Update.de_json(json_string)
+        update = Update.de_json(json_string)
+        print(update)
         bot.process_new_updates([update])
-        # print(PROJECT)
         return "OK", 200
     return abort(403)
-
-
-if __name__ == "__main__":
-    file_handler = FileHandler("app.log")
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(
-        Formatter("%(asctime)s %(levelname)s %(username)s: %(message)s")
-    )
-    app.logger.addHandler(file_handler)
-    app.run(debug=True)

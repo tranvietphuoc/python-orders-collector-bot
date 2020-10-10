@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
+black = "*"
 
 [packages]
 pytelegrambotapi = "*"
@@ -17,6 +18,10 @@ gunicorn = "*"
 neovim = "*"
 jedi = "*"
 pandas = "*"
+df2gspread = "*"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
