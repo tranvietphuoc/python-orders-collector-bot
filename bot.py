@@ -26,13 +26,35 @@ bot = telebot.TeleBot(TOKEN, threaded=False)
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
     """Send welcome when type /start."""
-    bot.send_message(message.chat.id, "Xin chào. Tôi có thể giúp gì bạn...")
+    bot.send_message(
+        message.chat.id,
+        "Xin chào. Mình là bot. Gõ /help để biết thêm chi tiết cách sử dụng. Happy working!",
+    )
+
+
+@bot.message_handler(commands=["about"])
+def send_about(message):
+    """Send about."""
+    about = """
+    Introduction myself
+    Name: L. Baby bot
+    Version: 2.0
+    Platform: Telegram
+    Author: Tran Viet Phuoc
+    Email: phuoc.finn@gmail.com
+    Github: https://github.com/tranvietphuoc
+    """
+    bot.send_message(message.chat.id, about)
 
 
 @bot.message_handler(commands=["help"])
 def send_help(message):
     """Send help message."""
     mess = """
+    Actived commands để tương tác với bot:
+    /start: Hello world
+    /help: Hướng dẫn sử dụng bot.
+    /about: Giới thiệu bot.
     /to_csv <YYYY-mm-dd>: Xuất file csv với ngày cụ thể theo định dạng trên.
     /to_sheet <YYYY-mm-dd>: Đẩy dữ liệu trong file csv đã lưu lên google sheets có sẵn.
     /backlog: Show link dẫn tới tool export backlog.
