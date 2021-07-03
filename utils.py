@@ -30,6 +30,8 @@ def extract_args(args):
         return args.split()[1]
     except IndexError:
         print("Only has one argument. Check it again.")
+    
+    return
 
 
 def save_to_sheet(wks, message):
@@ -76,6 +78,8 @@ def save_to_csv(file_uri, message):
     matching_pattern = (
         r"((^[A-Z]{2,}[A-Z0-9]{3,})|(^[0-9]{8,}[A-Z0-9]+)|(^[0-9]{1}[A-Z0-9]+))"
     )
+
+    matching_pattern1 = r'w+([a-z0-9])\s.'
     # make a list of order codes
     orders_of_message = [
         element[0]

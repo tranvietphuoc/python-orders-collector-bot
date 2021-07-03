@@ -8,6 +8,7 @@ import pandas as pd
 from df2gspread import df2gspread as df2g
 from utils import save_to_csv, save_to_sheet, extract_args
 
+
 # authorize app to google app as web server
 SCOPES = [
     "https://spreadsheets.google.com/feeds",
@@ -26,6 +27,7 @@ bot = telebot.TeleBot(TOKEN, threaded=False)
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
     """Send welcome when type /start."""
+
     bot.send_message(
         message.chat.id,
         "Xin chào. Mình là bot. Gõ /help để biết thêm chi tiết cách sử dụng. Happy working!",
@@ -35,6 +37,7 @@ def send_welcome(message):
 @bot.message_handler(commands=["about"])
 def send_about(message):
     """Send about."""
+
     about = """
     Introduction myself
     Name: L. Baby bot
@@ -50,6 +53,7 @@ def send_about(message):
 @bot.message_handler(commands=["help"])
 def send_help(message):
     """Send help message."""
+
     mess = """
     Actived commands để tương tác với bot:
     /start: Hello world
@@ -65,8 +69,9 @@ def send_help(message):
 @bot.message_handler(commands=["to_csv"])
 def send_csv(message):
     """Send csv file to user."""
-    arg = extract_args(message.text)
-    print(arg)
+    
+    args = extract_args(message.text)
+    print(args)
     file_uri = f"./assets/csv/kiem_kho_{str(arg)}.csv"
     try:
         with open(file_uri, mode="r") as file_obj:
@@ -75,13 +80,14 @@ def send_csv(message):
             )
     except FileNotFoundError:
         bot.send_message(
-            message.chat.id, f"File ngày {arg} không tồn tại. Vui lòng thử lại"
+            message.chat.id, f"File ngày {args} không tồn tại. Vui lòng thử lại"
         )
 
 
 @bot.message_handler(commands=["to_sheet"])
 def to_sheet(message):
     """Send data from csv at ./assets/csv/ folder to google sheets"""
+
     arg = extract_args(message.text)
     file_uri = f"./assets/csv/kiem_kho_{str(arg)}.csv"
     try:
@@ -119,6 +125,7 @@ def send_backlog(message):
 @bot.message_handler(func=lambda m: True)
 def collecting_handler(message):
     """Collect orders"""
+
     # open sheet
     sh = gc.open_by_key(SPREADSHEET_ID)
     if message.chat.type == "group" or message.chat.type == "private":

@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "python-orders-collector-bot"
+version = "0.1.0"
+description = ""
+authors = ["Tran Viet Phuoc <phuoc.finn@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pandas = "1.3.0rc1"
+Flask = "^2.0.1"
+python-dotenv = "^0.18.0"
+gspread = "^3.7.0"
+oauth2client = "^4.1.3"
+requests = "^2.25.1"
+gunicorn = "^20.1.0"
+df2gspread = "^1.0.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
