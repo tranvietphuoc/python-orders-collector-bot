@@ -5,13 +5,13 @@
 * flask
 * oauth2client
 * gspread
-* pipenv
+* poetry
 
 ## Prepare!!!
 * On telegram app, go to [botfather](https://telegram.me/BotFather) to make a telegram bot, then get API key and save into .env file
 * Make google api: [The gspread documentation explains how to create Google OAuth2.0 JWTs](http://gspread.readthedocs.org/en/latest/oauth2.html)
 * Save the JWTs file into working directory
-* In the working directory, run `pipenv install` to make the virtualenv
+* In the working directory, run `poetry install` to make the virtualenv. Then `poetry shell` to activate virtual environment, `poetry run python app.py` to run app in debug mode
 
 
 ## How to deploy?
