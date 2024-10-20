@@ -44,7 +44,7 @@ def send_about(message):
     Version: 2.0
     Platform: Telegram
     Author: Tran Viet Phuoc
-    Email: phuoc.finn@gmail.com
+    Email: phuoctv.ut@gmail.com
     Github: https://github.com/tranvietphuoc
     """
     bot.send_message(message.chat.id, about)
@@ -69,7 +69,7 @@ def send_help(message):
 @bot.message_handler(commands=["to_csv"])
 def send_csv(message):
     """Send csv file to user."""
-    
+
     args = extract_args(message.text)
     print(args)
     file_uri = f"./assets/csv/kiem_kho_{str(arg)}.csv"
@@ -80,7 +80,8 @@ def send_csv(message):
             )
     except FileNotFoundError:
         bot.send_message(
-            message.chat.id, f"File ngày {args} không tồn tại. Vui lòng thử lại"
+            message.chat.id,
+            f"File ngày {args} không tồn tại. Vui lòng thử lại",
         )
 
 
@@ -134,7 +135,10 @@ def collecting_handler(message):
         wks_quay_dau = sh.worksheet(ROTATION_NAME)
 
         # read data from group and write to sheets
-        if message.chat.title == "KIỂM KHO QUẬN 7" or message.chat.title == "test":
+        if (
+            message.chat.title == "KIỂM KHO QUẬN 7"
+            or message.chat.title == "test"
+        ):
             file_uri = f"./assets/csv/kiem_kho_{datetime.fromtimestamp(message.date).strftime('%Y-%m-%d')}.csv"
             # save text to csv file
             save_to_csv(file_uri, message)
